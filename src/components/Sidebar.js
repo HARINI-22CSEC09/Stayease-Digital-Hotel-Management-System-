@@ -13,7 +13,6 @@ const Sidebar = () => {
         <div className="d-flex align-items-center mb-3">
           <BsFillPersonFill size={30} className="me-2" />
           <div>
-            <h6 className="mb-0">Sanjay</h6>
             <small>MANAGER</small>
           </div>
         </div>

@@ -201,6 +201,69 @@ app.use('/rooms', roomsRouter);
 //app.use(cors());
 
 
+
+const reviewSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  rating: { type: Number, required: true },
+  comment: { type: String, required: true },
+  email: { type: String },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Review = mongoose.model("Review", reviewSchema);
+
+// Routes
+
+// Get all reviews
+app.get("/User", async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching reviews", error });
+  }
+});
+
+// Add a new review
+app.post("/User", async (req, res) => {
+  try {
+    const { name, rating, comment, email } = req.body;
+    const newReview = new Review({ name, rating, comment, email });
+    await newReview.save();
+    res.status(201).json(newReview);
+  } catch (error) {
+    res.status(400).json({ message: "Error submitting review", error });
+  }
+});
+
+const bookSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  checkIn: { type: String, required: true },
+  checkOut: { type: String, required: true },
+  guests: { type: Number, required: true },
+  roomType: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+
+const Bookings = mongoose.model('RoomBooking', bookSchema);
+
+// API Route to save booking
+app.post('/api/bookings', async (req, res) => {
+  try {
+    const { name, email, phone, checkIn, checkOut, guests, roomType } = req.body;
+    const newBooking = new Bookings({ name, email, phone, checkIn, checkOut, guests, roomType });
+    await newBooking.save();
+    res.status(201).json({ message: 'Booking saved successfully' });
+  } catch (error) {
+    console.error('Booking save failed:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
